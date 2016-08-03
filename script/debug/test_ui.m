@@ -1,0 +1,6 @@
+% d = dir;
+% str = {d.name};
+% [s,v] = listdlg('PromptString','Select a file:',...
+%                 'SelectionMode','single',...
+%                 'ListString',str);
+
