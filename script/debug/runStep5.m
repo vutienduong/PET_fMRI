@@ -464,7 +464,7 @@ if ~exist(get(handles.aal_tpl_path, 'String'), 'file')
 end
 
 if ~exist(get(handles.listFileTxt, 'String'), 'file')
-    warndlg('Please choose Matlab FILE defined details of images "list_file.mat" at [5] !');
+    warndlg('Please choose Matlab FILE defined details of images "list_file2.mat" at [5] !');
     return;
 end
 
