@@ -169,7 +169,7 @@ for i=1:length(roi_ids)
     volume = struct();
     volume.original = length(maskedImgFind) * VOX_UNIT;
     volume.largerSuvThresh = sum(nonZerosVox > suvParams.suvThreshold(1) / multiplier) * VOX_UNIT;
-    volume.largerSuvrThresh = sum(nonZerosVox > suvParams.suvThreshold(1)  * SUV_ref_mean / multiplier) * VOX_UNIT;
+    volume.largerSuvrThresh = sum(nonZerosVox > suvParams.suvrThreshold(1)  * SUV_ref_mean / multiplier) * VOX_UNIT;
     
     volume.intensity = nonZerosVox;
     [x,y,z] = ind2sub(size(oimg), maskedImgFind);
