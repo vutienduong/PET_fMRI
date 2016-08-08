@@ -395,7 +395,7 @@ params.subList = handles.subList; % TODO: check
 params.roiList = handles.roiList;
 
 % temporaly disable "Run" button
-set(handles.runBtn, 'enable', 'off');
+% set(handles.runBtn, 'enable', 'off');
 
 % call main function
 [suv, suvall] = scr_fcn_run_all(params);
