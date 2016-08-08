@@ -21,6 +21,7 @@ end
 
 hdr = spm_vol(deblank(GM_PET_img));
 VOX_UNIT = scr_func_cal_vox_size(hdr);
+disp(['VOX_UNIT: ' num2str(VOX_UNIT)]); % test
 oimg = spm_read_vols(hdr);
 
 % LOAD ROI_MNI template file
@@ -118,15 +119,15 @@ if suvParams.isSaveSuvrThr % check whether SAVE SUV THRESH
     end
 end
 
-% only save files for whole brain
-for i=1 : countFiles
-    temp = allSavedFiles{i, 1};
-    hdr2 = hdr;
-    hdr2.fname  = fullfile( suvParams.savedSuv,[suvParams.subName temp.name num2str(temp.thresh) '.img']);
-    hdr2 = spm_create_vol(hdr2);
-    temp.img(temp.img < temp.thresh) = 0;
-    spm_write_vol(hdr2, temp.img);
-end
+% only save files for whole brain, TODO: temp remove save
+% for i=1 : countFiles
+%     temp = allSavedFiles{i, 1};
+%     hdr2 = hdr;
+%     hdr2.fname  = fullfile( suvParams.savedSuv,[suvParams.subName temp.name num2str(temp.thresh) '.img']);
+%     hdr2 = spm_create_vol(hdr2);
+%     temp.img(temp.img < temp.thresh) = 0;
+%     spm_write_vol(hdr2, temp.img);
+% end
 % ============== End SAVE suv file ========================================
 
 
@@ -188,14 +189,14 @@ for i=1:length(roi_ids)
 end
 
 % save Suv temp
-eval(sprintf('SUV_%s = suv;', suvParams.subName));
+eval(sprintf('SUV_%s = suv;', suvParams.subName)); 
 save( fullfile( suvParams.savedSuv,['SUV_' suvParams.subName '.mat']) ,['SUV_' suvParams.subName]);
 
-% Save for selected ROIs along to 
-for i=1 : length(allRoiSavedFiles)
-    temp =  allRoiSavedFiles{i, 1};
-    hdr2 = hdr;
-    hdr2.fname  = fullfile( suvParams.savedSuv,[suvParams.subName temp.name num2str(temp.thresh) '_ROI.img']);
-    hdr2 = spm_create_vol(hdr2);
-    spm_write_vol(hdr2,temp.img);
-end
+% Save for selected ROIs along to, TODO: temp remove save
+% for i=1 : length(allRoiSavedFiles)
+%     temp =  allRoiSavedFiles{i, 1};
+%     hdr2 = hdr;
+%     hdr2.fname  = fullfile( suvParams.savedSuv,[suvParams.subName temp.name num2str(temp.thresh) '_ROI.img']);
+%     hdr2 = spm_create_vol(hdr2);
+%     spm_write_vol(hdr2,temp.img);
+% end
