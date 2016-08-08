@@ -1,6 +1,6 @@
 mapStt = scr_get_Status();
 patt = '*.img';
- cd('D:\LEARN\2nd SEMESTER\more\PET medical\July 29\additional 41 images & additional 16 images\hdr files changed in same name Eng'); %change current directory to cur_path
+ cd('D:\LEARN\2nd SEMESTER\more\PET medical\July 29\additional 41 images & additional 16 images\%%long interval MRI-PET\%%long interval MRI-PET_hdr files changed in same name Eng'); %change current directory to cur_path
 list_file = struct(); % include fmri and pet fields in each element
 list = dir(patt); % NOTE: current directory
 j = 1;
