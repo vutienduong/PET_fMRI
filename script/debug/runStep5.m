@@ -251,11 +251,11 @@ fclose(fid);                                % Don't forget to close file
 t.Properties.VariableNames = {'Abbr' 'roi_name' 'ID'};
 roi_name = t.roi_name;
 if hObject == handles.defRoiBtn
-    init_vals = [3:16, 19:28, 43:56, 59:68, 81,82, 85, 86, 89, 90 ];
+    init_vals = [3:16, 19:28, 31:36, 43:56, 59:68, 79:82, 85, 86, 89, 90 ];
 elseif isfield(handles, 'roiListGui') % open from 2nd time
     init_vals = handles.roiListGui;
 else
-    init_vals = [3:16, 19:28, 43:56, 59:68, 81,82, 85, 86, 89, 90 ];
+    init_vals = [3:16, 19:28, 31:36, 43:56, 59:68, 79:82, 85, 86, 89, 90 ];
     set(handles.defRoiBtn, 'enable', 'on');
 end
 
