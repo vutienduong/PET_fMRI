@@ -398,6 +398,7 @@ params.roiList = handles.roiList;
 % set(handles.runBtn, 'enable', 'off');
 
 % call main function
+% MAIN FUNCTION
 [suv, suvall] = scr_fcn_run_all(params);
 
 % save "suv, suvr" files

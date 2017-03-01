@@ -1,11 +1,14 @@
 clear;
 % load list_file2.mat
 % saved_folder = 'D:\LEARN\fMRI\spm8\toolbox\aal\saved';
+% excelFilename = fullfile(saved_folder, 'testdata.xlsx');
 
 load list_file3.mat
 saved_folder = 'D:\LEARN\fMRI\spm8\toolbox\aal\saved_40_addition';
-excelFilename = fullfile(saved_folder, 'testdataVol.xlsx');
+excelFilename = fullfile(saved_folder, 'testdataSuv.xlsx');
+
 sheet = 1;
+SUV_id = {'SUV_max', 'SUV_mean', 'SUVR_max', 'SUVR_mean'};
 
 if exist('list_file', 'var')
     title_arr = {'Name', 'Status'};
@@ -31,7 +34,10 @@ if exist('list_file', 'var')
                 end
                 
                 % write title from B1
-                xlswrite(excelFilename, title_arr, sheet, 'B1');
+                for j=1:4
+                    % xlswrite(excelFilename, title_arr, sheet, 'B1');
+                    xlswrite(excelFilename, title_arr, j, 'B1');% sheet j-th
+                end
                 
                 % update already created title status
                 title_created = 1;
@@ -45,16 +51,19 @@ if exist('list_file', 'var')
             end
             
             % create cell stored data needed writing
-            A = {list_file(i).name, status};
-            xlRange = sprintf('B%d', order_num + 1);
-            
-            % add each ROI volume to cell A
-            for j=1:length(suvTemp)
-                A{1, 2+j} = [suvTemp(j).otherInfo.largerSuvrThresh];
+            A = cell(1,4);
+            for j=1:4
+                A{1,j} = {list_file(i).name, status};
+                xlRange = sprintf('B%d', order_num + 1);
+
+                % add each ROI volume to cell A
+                for k=1:length(suvTemp)
+                    eval(sprintf('A{1,j}{1, 2+k} = [suvTemp(k).%s];', SUV_id{1,j}));
+                end
+
+                % write data to Excel
+                xlswrite(excelFilename,A{1,j},j,xlRange);% sheet j-th
             end
-            
-            % write data to Excel
-            xlswrite(excelFilename,A,sheet,xlRange);
             
             
             % inform success writing

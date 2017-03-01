@@ -62,6 +62,8 @@ else
     load(list_file_name);
     list_file = list_file(guiParams.subList);
 end
+
+%load('list_file_2add.mat');
 nrun = length(list_file);
 
 % %==================STEP 1: coregister PET -> MRI==================
@@ -131,6 +133,10 @@ if STEPS(5)
     suv = struct();
     t = readtable(guiParams.file_info,'Delimiter','\t','ReadVariableNames',true);
     params = table2struct(t);
+    
+    % guiParams.subList = 58:88;% HARD CODE, dung cho 40 image them vao sau nay
+    % guiParams.subList = 60:62;
+    
     params = params(guiParams.subList);
 %     suvParams = struct();
 %     suvParams.suvTh = guiParams.suvThreshold;
