@@ -89,7 +89,8 @@ if STEPS(1)
 end
 
 % %==================STEP 2: segment MRI==================
-if STEPS(2)
+%if STEPS(2) 
+if 0 % for no sub
     jobfile = {fullfile(job_dir_path, 'step2_job.m')};
     jobs = repmat(jobfile, 1, nrun);
     inputs = cell(1, nrun);
@@ -104,9 +105,12 @@ end
 %==================STEP 3: matching==================
 if STEPS(3)
     for crun = 1:nrun
-        WM_img = fullfile(cur_path, ['c2' list_file(crun).fmri tail]);
-        rPET_img = fullfile(cur_path, ['r' list_file(crun).pet tail]);
-        scr_func1_thresh(WM_img, rPET_img, THRESHOLD);
+		rPET_img = fullfile(cur_path, ['r' list_file(crun).pet tail]);
+        
+		%WM_img = fullfile(cur_path, ['c2' list_file(crun).fmri tail]);
+        %scr_func1_thresh(WM_img, rPET_img, THRESHOLD);
+		
+		scr_func1_thresh_no_sub(rPET_img, rPET_img, THRESHOLD); % for no sub
     end
     disp('===========FINISH STEP 3===========');
 end
@@ -133,8 +137,8 @@ if STEPS(5)
     suv = struct();
     t = readtable(guiParams.file_info,'Delimiter','\t','ReadVariableNames',true);
     params = table2struct(t);
-    
-    % guiParams.subList = 58:88;% HARD CODE, dung cho 40 image them vao sau nay
+    % guiParams.subList = 1:31;
+    guiParams.subList = 58:88;% HARD CODE, dung cho 40 image them vao sau nay
     % guiParams.subList = 60:62;
     
     params = params(guiParams.subList);
@@ -147,8 +151,12 @@ if STEPS(5)
     for crun = 1:nrun
         pet_img = list_file(crun).pet;
         pet_hdr = [pet_img(1:(end-3)) 'hdr'];
-        GM_PET_img = fullfile(cur_path, ['m_r' pet_hdr ',1']);
-        rTpl_img = fullfile(cur_path, ['rr' list_file(crun).name 'ROI_MNI_V4.nii,1']);
+%         GM_PET_img = fullfile(cur_path, ['m_r' pet_hdr ',1']); % TODO
+%         rTpl_img = fullfile(cur_path, ['rr' list_file(crun).name
+%         'ROI_MNI_V4.nii,1']); % TODO
+        
+        GM_PET_img = fullfile(cur_path, ['rm_r' pet_hdr ',1']);
+        rTpl_img = fullfile(cur_path, 'ROI_MNI_V4.nii,1');
         disp(['...run subject ', list_file(crun).name]);
         guiParams.subName = list_file(crun).name;
         suvValue = scr_func2(GM_PET_img, rTpl_img, ROI, params(crun), guiParams);

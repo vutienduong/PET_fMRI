@@ -1,10 +1,10 @@
 clear;
 % load list_file2.mat
-% saved_folder = 'D:\LEARN\fMRI\spm8\toolbox\aal\saved';
+saved_folder = 'D:\LEARN\fMRI\spm8\toolbox\aal\saved';
 % excelFilename = fullfile(saved_folder, 'testdata.xlsx');
 
 load list_file3.mat
-saved_folder = 'D:\LEARN\fMRI\spm8\toolbox\aal\saved_40_addition';
+%saved_folder = 'D:\LEARN\fMRI\spm8\toolbox\aal\saved_40_addition';
 excelFilename = fullfile(saved_folder, 'testdataSuv.xlsx');
 
 sheet = 1;
