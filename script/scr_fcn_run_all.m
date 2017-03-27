@@ -67,7 +67,8 @@ end
 nrun = length(list_file);
 
 % %==================STEP 1: coregister PET -> MRI==================
-if STEPS(1)
+% if STEPS(1)
+if 0 % TODO: trick     
     jobfile = {fullfile(job_dir_path, 'step1_job.m')};
     jobs = repmat(jobfile, 1, nrun);
     inputs = cell(2, nrun);
@@ -89,8 +90,8 @@ if STEPS(1)
 end
 
 % %==================STEP 2: segment MRI==================
-%if STEPS(2) 
-if 0 % for no sub
+% if STEPS(2) 
+if 0 % TODO for no sub
     jobfile = {fullfile(job_dir_path, 'step2_job.m')};
     jobs = repmat(jobfile, 1, nrun);
     inputs = cell(1, nrun);
@@ -106,17 +107,17 @@ end
 if STEPS(3)
     for crun = 1:nrun
 		rPET_img = fullfile(cur_path, ['r' list_file(crun).pet tail]);
-        
-		%WM_img = fullfile(cur_path, ['c2' list_file(crun).fmri tail]);
-        %scr_func1_thresh(WM_img, rPET_img, THRESHOLD);
+		WM_img = fullfile(cur_path, ['c2' list_file(crun).fmri tail]);
+        scr_func1_thresh(WM_img, rPET_img, THRESHOLD);
 		
-		scr_func1_thresh_no_sub(rPET_img, rPET_img, THRESHOLD); % for no sub
+		% scr_func1_thresh_no_sub(rPET_img, rPET_img, THRESHOLD); % TODO for no sub
     end
     disp('===========FINISH STEP 3===========');
 end
 
 % %==================STEP 3.1: coregister ROI_MNI -> MRI==================
-if STEPS(4)
+if 0
+% if STEPS(4) % TODO: for debug
     jobfile = {fullfile(job_dir_path, 'step3_job.m')};
     jobs = repmat(jobfile, 1, nrun);
     inputs = cell(2, nrun);
@@ -138,8 +139,8 @@ if STEPS(5)
     t = readtable(guiParams.file_info,'Delimiter','\t','ReadVariableNames',true);
     params = table2struct(t);
     % guiParams.subList = 1:31;
-    guiParams.subList = 58:88;% HARD CODE, dung cho 40 image them vao sau nay
-    % guiParams.subList = 60:62;
+    % guiParams.subList = 58:88;% HARD CODE, dung cho 40 image them vao sau nay
+    guiParams.subList = [25,35]; %TODO : for debug
     
     params = params(guiParams.subList);
 %     suvParams = struct();
@@ -148,15 +149,17 @@ if STEPS(5)
 %     suvParams.savedSuv = guiParams.savedSuv;
 %     suvParams.roiList = guiParams.roiList;
 
+for tempVar1 = 1.0:0.1:2.0
+    guiParams.suvrThreshold = tempVar1;
+    disp([ 'Run for SUVR thresh: ' num2str(guiParams.suvrThreshold)]);
     for crun = 1:nrun
         pet_img = list_file(crun).pet;
         pet_hdr = [pet_img(1:(end-3)) 'hdr'];
-%         GM_PET_img = fullfile(cur_path, ['m_r' pet_hdr ',1']); % TODO
-%         rTpl_img = fullfile(cur_path, ['rr' list_file(crun).name
-%         'ROI_MNI_V4.nii,1']); % TODO
+        GM_PET_img = fullfile(cur_path, ['m_r' pet_hdr ',1']); % TODO
+        rTpl_img = fullfile(cur_path, ['rr' list_file(crun).name, 'ROI_MNI_V4.nii,1']); % TODO
         
-        GM_PET_img = fullfile(cur_path, ['rm_r' pet_hdr ',1']);
-        rTpl_img = fullfile(cur_path, 'ROI_MNI_V4.nii,1');
+%         GM_PET_img = fullfile(cur_path, ['rm_r' pet_hdr ',1']); % TODO for no sub
+%         rTpl_img = fullfile(cur_path, 'ROI_MNI_V4.nii,1'); % TODO for no sub
         disp(['...run subject ', list_file(crun).name]);
         guiParams.subName = list_file(crun).name;
         suvValue = scr_func2(GM_PET_img, rTpl_img, ROI, params(crun), guiParams);
@@ -166,6 +169,7 @@ if STEPS(5)
         end
         disp('Done ...');
     end
+end
 end
 
 %======ADDITION: calculate SUVR AVERAGE for POS, NEG subjs ======

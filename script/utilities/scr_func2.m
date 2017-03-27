@@ -120,14 +120,15 @@ if suvParams.isSaveSuvrThr % check whether SAVE SUV THRESH
 end
 
 % only save files for whole brain, TODO: temp remove save
-% for i=1 : countFiles
-%     temp = allSavedFiles{i, 1};
-%     hdr2 = hdr;
-%     hdr2.fname  = fullfile( suvParams.savedSuv,[suvParams.subName temp.name num2str(temp.thresh) '.img']);
-%     hdr2 = spm_create_vol(hdr2);
-%     temp.img(temp.img < temp.thresh) = 0;
-%     spm_write_vol(hdr2, temp.img);
-% end
+for i=1 : countFiles
+    temp = allSavedFiles{i, 1};
+    hdr2 = hdr;
+    hdr2.fname  = fullfile( suvParams.savedSuv,[suvParams.subName temp.name num2str(temp.thresh) '.img']);
+    hdr2 = spm_create_vol(hdr2);
+    temp.img(temp.img < temp.thresh) = 0;
+    spm_write_vol(hdr2, temp.img);
+end
+return; %TODO: for debug
 % ============== End SAVE suv file ========================================
 
 
@@ -192,7 +193,7 @@ end
 eval(sprintf('SUV_%s = suv;', suvParams.subName)); 
 save( fullfile( suvParams.savedSuv,['SUV_' suvParams.subName '.mat']) ,['SUV_' suvParams.subName]);
 
-% Save for selected ROIs along to, TODO: temp remove save
+% % Save for selected ROIs along to, TODO: temp remove save
 % for i=1 : length(allRoiSavedFiles)
 %     temp =  allRoiSavedFiles{i, 1};
 %     hdr2 = hdr;

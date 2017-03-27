@@ -113,7 +113,8 @@ params.job_dir_path = get(handles.job_dir_path, 'string');
 params.aal_file = get(handles.aal_file, 'string');
 params.binThresh = str2double(get(handles.binThrMatEdit, 'String'));
 params.steps = [1 1 1 1 0];
-scr_fcn_run_all_sub_notemp(params); % TODO
+scr_fcn_run_all(params);
+% scr_fcn_run_all_sub_notemp(params); % TODO for no sub no temp
 
 function isOk = checkChosenManFields(handles)
 isOk = false;

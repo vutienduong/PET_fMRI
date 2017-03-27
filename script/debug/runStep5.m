@@ -512,7 +512,8 @@ function selSubBtn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 subfile = get(handles.listFileTxt,'string');
 load(subfile);
-temp = extractfield(list_file, 'name');
+% temp = extractfield(list_file, 'name');
+temp = {list_file(:).name}; %TODO extractfield is undefined function
 if isfield(handles, 'subList')
     init_vals = handles.subList;
 else
