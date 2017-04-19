@@ -1,5 +1,6 @@
+% Note: De tao MRI hoac PET, thay doi o TODO1
 clear;
-load('list_file_all_56_same_mri.mat');
+load('list_file_health_56_same_mri.mat');
 
 patt = '*.img';
 tail = ',1';
@@ -7,8 +8,8 @@ job_dir_path = 'D:\RESEARCH\spm8\toolbox\aal\necessaryFiles'; %TODO: hardcode
 cur_path = 'D:\RESEARCH\spm8\toolbox\aal\demo\56 subjects'; % TODO: hardcode, test
 cd(cur_path); %change current directory to cur_path
 
-avg_temp_name = 'all_56(same_mri)_pet.img';
-avg_temp_folder = 'D:\RESEARCH\spm8\toolbox\aal\data and save\ALL METHODS USE NORMALIZATION\2 based on manual temp\Temp folder';
+avg_temp_name = 'MRItemp_health_56(same mri).img';
+avg_temp_folder = 'D:\RESEARCH\spm8\toolbox\aal\necessaryFiles\Temp folder\mri temp';
 nrun = length(list_file);
 
 
@@ -58,7 +59,9 @@ inputs = cell(4, 1);
 % list wr_pet files
 wrpet_files = cell(nrun, 1);
 for crun =1:nrun
-    wrpet_files{crun, 1} = fullfile(cur_path, ['wr' list_file(crun).pet tail]);
+    % wrpet_files{crun, 1} = fullfile(cur_path, ['wr' list_file(crun).pet
+    % tail]); % TODO1: for wrPET
+    wrpet_files{crun, 1} = fullfile(cur_path, ['w' list_file(crun).fmri tail]); % TODO1: for wMRI
 end
 
 % string of expression
