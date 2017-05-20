@@ -26,6 +26,7 @@
 wgm_ext = 'D:\RESEARCH\spm8\toolbox\aal\data and save\ALL METHODS USE NORMALIZATION\1 normal way based on default temp\GM mask\thresh 0_7\wgm_ext\wgm_ext_rJO_YONG_HWAN_20170116_19282_600_PTCT_FLORBETABEN_DYNAMIC_3D_Brain(SUM).img,1';
 wiwm_ext = 'D:\RESEARCH\spm8\toolbox\aal\data and save\ALL METHODS USE NORMALIZATION\1 normal way based on default temp\WM extracted\thresh 0_7\wiwm_ext\wiwm_ext_rJO_YONG_HWAN_20170116_19282_600_PTCT_FLORBETABEN_DYNAMIC_3D_Brain(SUM).img,1';
 non_ext = 'D:\RESEARCH\spm8\toolbox\aal\data and save\ALL METHODS USE NORMALIZATION\1 normal way based on default temp\WM non extracted\wrJO_YONG_HWAN_20170116_19282_600_PTCT_FLORBETABEN_DYNAMIC_3D_Brain(SUM).img,1';
+hdr_file = 'D:\RESEARCH\spm8\toolbox\aal\demo\56 subjects\JO_YONG_HWAN_20170116_19282_600_PTCT_FLORBETABEN_DYNAMIC_3D_Brain(SUM).hdr';
 img_file = wiwm_ext;
 
 templ_file = 'D:\RESEARCH\spm8\toolbox\aal\necessaryFiles\Temp folder\wROI_MNI_V4.nii';

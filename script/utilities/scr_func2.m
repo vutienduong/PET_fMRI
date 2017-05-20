@@ -13,18 +13,27 @@ roi_map = suvParams.roiList;
 % CREATE suv: variable stored infomation of ROIs, max SUV, mean SUV
 suv = struct();
 
-% LOAD m_r_PET file
+% LOAD m_r_PET file ------------------
 if ~exist(GM_PET_img(1:(end-2)), 'file')
     disp(['[Inorge] ', params.name ]);
     return;
 end
 
+
+% CALCULATE VOX_UNIT ------------------
 hdr = spm_vol(deblank(GM_PET_img));
-VOX_UNIT = scr_func_cal_vox_size(hdr);
+% VOX_UNIT = scr_func_cal_vox_size(hdr); % cach 1
+VOX_UNIT = abs(det(hdr.mat)); % cach 2
+
+% cach 3
+% rpet_image = load_nii(GM_PET_img);
+% VOX_UNIT = prod(rpet_image.hdr.dime.pixdim(2:4));
+
 disp(['VOX_UNIT: ' num2str(VOX_UNIT)]); % test
 oimg = spm_read_vols(hdr);
 
-% LOAD ROI_MNI template file
+
+% LOAD ROI_MNI template file ----------
 hdrTpl = spm_vol(deblank(rTpl_img));
 oimgTpl = spm_read_vols(hdrTpl);
 
@@ -42,7 +51,7 @@ oimgTpl = spm_read_vols(hdrTpl);
 
 
 
-% CREATE multiplier for SUV
+% CREATE multiplier for SUV ------------------
 % -- appr 1
 % decay_factor  = exp(-log2(params.time*60/params.half_life));
 % decay_factor  = exp(-log(2)*(params.time*60/params.half_life));
@@ -51,8 +60,9 @@ oimgTpl = spm_read_vols(hdrTpl);
 % -- appr 2
 decay_factor  = 2^(-params.time*60/params.half_life);
 multiplier = params.weight/(decay_factor*params.dosage*1000);
+% multiplier = params.weight/(decay_factor*params.dosage); % same as QAV-PET
 
-% calculate SUV of reference VOI (cerebellar cortex) -------------------
+% Calculate SUV of reference VOI (cerebellar cortex) -------------------
 % name: from CERCRU1G to CER10D
 % id: from 9021 to 9082
 [SUV_ref_max, SUV_ref_mean] = scr_func_cal_suv(oimg, oimgTpl, [LOWER_BOUND_REF_ID, UPPER_BOUND_REF_ID], multiplier);
@@ -62,17 +72,17 @@ multiplier = params.weight/(decay_factor*params.dosage*1000);
 
 % ============== Start SAVE suv file ======================================
 % templates
-SUV_FILE            = struct('img',oimg * multiplier,...
-                             'name','_suv_',...
-                             'thresh',0 );
-              
-SUV_SIG_FILE        = struct('img',oimg * multiplier,...
-                             'name','_suvSig_',...
-                             'thresh',0 );
-              
-SUVR_SIG_MEAN_FILE  = struct('img',oimg*(multiplier/SUV_ref_mean),...
-                             'name','_suvrMeanSig_',...
-                             'thresh', 0);
+% SUV_FILE            = struct('img',oimg * multiplier,...
+%                              'name','_suv_',...
+%                              'thresh',0 );
+%               
+% SUV_SIG_FILE        = struct('img',oimg * multiplier,...
+%                              'name','_suvSig_',...
+%                              'thresh',0 );
+%               
+% SUVR_SIG_MEAN_FILE  = struct('img',oimg*(multiplier/SUV_ref_mean),...
+%                              'name','_suvrMeanSig_',...
+%                              'thresh', 0);
 
 % TODO: check whether SUVR_SIG_MAX_FILE is required
 % SUVR_SIG_MAX_FILE = struct('img',oimg* (multiplier/SUV_ref_max) , '_suvrMaxSig.img', 'thresh', 0);
@@ -83,14 +93,14 @@ allRoiSavedFiles = cell(0);
 countFiles = 0;
 
 % initial save SUV_FILE (suvThresh = 0);
-if suvParams.isSaveSuvMap % check whether SAVE SUV MAP
-    countFiles = countFiles + 1;
-    allSavedFiles{countFiles,1} = SUV_FILE;
-
-    temp = SUV_FILE;
-    temp.img = zeros(size(oimg));
-    allRoiSavedFiles{countFiles,1} = temp;
-end
+% if suvParams.isSaveSuvMap % check whether SAVE SUV MAP
+%     countFiles = countFiles + 1;
+%     allSavedFiles{countFiles,1} = SUV_FILE;
+% 
+%     temp = SUV_FILE;
+%     temp.img = zeros(size(oimg));
+%     allRoiSavedFiles{countFiles,1} = temp;
+% end
 
 
 % initial save SUV_SIG_FILE (s)
@@ -120,19 +130,19 @@ if suvParams.isSaveSuvrThr % check whether SAVE SUV THRESH
 end
 
 % only save files for whole brain, TODO: temp remove save
-for i=1 : countFiles
-    temp = allSavedFiles{i, 1};
-    hdr2 = hdr;
-    hdr2.fname  = fullfile( suvParams.savedSuv,[suvParams.subName temp.name num2str(temp.thresh) '.img']);
-    hdr2 = spm_create_vol(hdr2);
-    temp.img(temp.img < temp.thresh) = 0;
-    spm_write_vol(hdr2, temp.img);
-end
-return; %TODO: for debug
+% for i=1 : countFiles
+%     temp = allSavedFiles{i, 1};
+%     hdr2 = hdr;
+%     hdr2.fname  = fullfile( suvParams.savedSuv,[suvParams.subName temp.name num2str(temp.thresh) '.img']);
+%     hdr2 = spm_create_vol(hdr2);
+%     temp.img(temp.img < temp.thresh) = 0;
+%     spm_write_vol(hdr2, temp.img);
+% end
+% return; %TODO: for debug
 % ============== End SAVE suv file ========================================
 
 
-clear {SUV_FILE,SUV_SIG_FILE,SUVR_SIG_MEAN_FILE};
+% clear {SUV_FILE,SUV_SIG_FILE,SUVR_SIG_MEAN_FILE};
 
 % calculation SUV of each region VOI -----------------------------------
 roi_ids = keys(roi_map);
@@ -173,9 +183,10 @@ for i=1:length(roi_ids)
     volume.largerSuvThresh = sum(nonZerosVox > suvParams.suvThreshold(1) / multiplier) * VOX_UNIT;
     volume.largerSuvrThresh = sum(nonZerosVox > suvParams.suvrThreshold(1)  * SUV_ref_mean / multiplier) * VOX_UNIT;
     
-    volume.intensity = nonZerosVox;
-    [x,y,z] = ind2sub(size(oimg), maskedImgFind);
-	volume.coord = [x y z]';
+    %volume.intensity = nonZerosVox;
+    %[x,y,z] = ind2sub(size(oimg), maskedImgFind);
+	%volume.coord = [x y z]';
+    
     suv(i).otherInfo = volume;
     
     % update suv, suvr along to ROI to allRoiSavedFiles

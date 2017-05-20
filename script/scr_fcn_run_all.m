@@ -140,26 +140,75 @@ if STEPS(5)
     params = table2struct(t);
     % guiParams.subList = 1:31;
     % guiParams.subList = 58:88;% HARD CODE, dung cho 40 image them vao sau nay
-    guiParams.subList = [25,35]; %TODO : for debug
+    % guiParams.subList = [25,35]; %TODO : for debug
     
-    params = params(guiParams.subList);
+    % list_name = {list_file(guiParams.subList).name};
+    list_name = {list_file.name};
+    scanInd = []; % use to store index of subject in scaninfo file
+    for crun = 1:length(list_name)
+        tempInd = find(strcmp({params.name}, list_name(crun)));
+        scanInd = [scanInd tempInd];
+    end
+    
+    params = params(scanInd);
 %     suvParams = struct();
 %     suvParams.suvTh = guiParams.suvThreshold;
 %     suvParams.suvrTh = guiParams.suvrThreshold;
 %     suvParams.savedSuv = guiParams.savedSuv;
 %     suvParams.roiList = guiParams.roiList;
 
-for tempVar1 = 1.0:0.1:2.0
+old_savedSuv = guiParams.savedSuv;
+tempSuvThr = 0.5;
+ for tempVar1 = [0.9, 1.55 , 2.0] %[0.9, 1.1, 1.3, 1.55 , 1.8, 2.0]% 0.9:0.1:2.0
+    guiParams.savedSuv = [old_savedSuv num2str(tempVar1)];
+    if exist(guiParams.savedSuv, 'dir') ~= 7
+        mkdir(guiParams.savedSuv);
+    end
     guiParams.suvrThreshold = tempVar1;
+    guiParams.suvThreshold = tempSuvThr;
     disp([ 'Run for SUVR thresh: ' num2str(guiParams.suvrThreshold)]);
+    disp([ 'Run for SUV thresh: ' num2str(guiParams.suvThreshold)]);
+    tempSuvThr = tempSuvThr + 0.2;
     for crun = 1:nrun
         pet_img = list_file(crun).pet;
         pet_hdr = [pet_img(1:(end-3)) 'hdr'];
-        GM_PET_img = fullfile(cur_path, ['m_r' pet_hdr ',1']); % TODO
-        rTpl_img = fullfile(cur_path, ['rr' list_file(crun).name, 'ROI_MNI_V4.nii,1']); % TODO
         
-%         GM_PET_img = fullfile(cur_path, ['rm_r' pet_hdr ',1']); % TODO for no sub
-%         rTpl_img = fullfile(cur_path, 'ROI_MNI_V4.nii,1'); % TODO for no sub
+        % 1. version with m_r
+%         GM_PET_img = fullfile(cur_path, ['m_r' pet_hdr ',1']);
+%         rTpl_img = fullfile(cur_path, ['rr' list_file(crun).name, 'ROI_MNI_V4.nii,1']);
+
+        % 2. version for no sub
+%         GM_PET_img = fullfile(cur_path, ['rm_r' pet_hdr ',1']);
+%         rTpl_img = fullfile(cur_path, 'ROI_MNI_V4.nii,1');
+
+        % 3. new version with Inverse Norm (5*)
+        rTpl_img = fullfile(cur_path, ['wROI_MNI_V4' list_file(crun).name '.nii,1']);
+        % a) for non extract
+%         GM_PET_img = fullfile(cur_path, ['r' pet_hdr ',1']); % use 'r' for register
+        
+        % b) for wm extract, thr = 0.7
+        IWM_PET_folder = 'D:\RESEARCH\spm8\toolbox\aal\data and save\ALL METHODS USE NORMALIZATION\1 normal way based on default temp\WM extracted\thresh 0\iwm_ext';
+        GM_PET_img = fullfile(IWM_PET_folder, ['iwm_ext_r' pet_hdr ',1']); 
+        
+        % c) for gm extract, thr = 0.7
+%         GM_PET_folder = 'D:\RESEARCH\spm8\toolbox\aal\data and save\ALL METHODS USE NORMALIZATION\1 normal way based on default temp\GM mask\thresh 0_7\gm_ext';
+%         GM_PET_img = fullfile(GM_PET_folder, ['gm_ext_r' pet_hdr ',1']);
+        
+        % 3.1 new version with Inverse Norm, MNI STANDARD SPACE (4*)
+        % 3.1.1 ROI_MNI_V4 (79 x 95 x68) template type
+%         rTpl_img = fullfile(job_dir_path, 'Temp folder', 'wROI_MNI_V4_along_mri.nii,1'); % 3.1.1 i) along MRI
+%         rTpl_img = fullfile(job_dir_path, 'Temp folder', 'wROI_MNI_V4_along_pet.nii,1'); % 3.1.1 i) along PET
+%         rTpl_img = fullfile(job_dir_path, 'Temp folder', 'wROI_MNI_V4_as_inv_mri_segment.nii,1'); % 3.1.1 i) along T1.nii segment
+        
+        % a) for gm extract, thr = 0.7
+%         GM_PET_folder = 'D:\RESEARCH\spm8\toolbox\aal\data and save\ALL METHODS USE NORMALIZATION\1 normal way based on default temp\GM mask\thresh 0_7\wgm_ext';
+%         GM_PET_img = fullfile(GM_PET_folder, ['wgm_ext_r' pet_hdr ',1']);
+        
+        % b)for iwm extract, thr = 0.7
+%         GM_PET_folder = 'D:\RESEARCH\spm8\toolbox\aal\data and save\ALL METHODS USE NORMALIZATION\1 normal way based on default temp\WM extracted\thresh 0_7\wiwm_ext';
+%         GM_PET_img = fullfile(GM_PET_folder, ['wiwm_ext_r' pet_hdr ',1']);
+        
+
         disp(['...run subject ', list_file(crun).name]);
         guiParams.subName = list_file(crun).name;
         suvValue = scr_func2(GM_PET_img, rTpl_img, ROI, params(crun), guiParams);
