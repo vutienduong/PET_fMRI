@@ -103,31 +103,31 @@ countFiles = 0;
 % end
 
 
-% initial save SUV_SIG_FILE (s)
-if suvParams.isSaveSuvThr % check whether SAVE SUV THRESH
-    for i=1:length(suvParams.suvThreshold)
-        newSuvSigFile = SUV_SIG_FILE;
-        newSuvSigFile.thresh = suvParams.suvThreshold(i);
-        countFiles = countFiles + 1;
-        allSavedFiles{countFiles, 1} = newSuvSigFile;
-
-        newSuvSigFile.img = zeros(size(oimg));
-        allRoiSavedFiles{countFiles,1} = newSuvSigFile;
-    end
-end
-
-% initial save SUVR_SIG_FILE (s)
-if suvParams.isSaveSuvrThr % check whether SAVE SUV THRESH
-    for i=1:length(suvParams.suvrThreshold)
-        newSuvSigFile = SUVR_SIG_MEAN_FILE;
-        newSuvSigFile.thresh = suvParams.suvrThreshold(i);
-        countFiles = countFiles + 1;
-        allSavedFiles{countFiles, 1} = newSuvSigFile;
-
-        newSuvSigFile.img = zeros(size(oimg));
-        allRoiSavedFiles{countFiles,1} = newSuvSigFile;
-    end
-end
+% % initial save SUV_SIG_FILE (s)
+% if suvParams.isSaveSuvThr % check whether SAVE SUV THRESH
+%     for i=1:length(suvParams.suvThreshold)
+%         newSuvSigFile = SUV_SIG_FILE;
+%         newSuvSigFile.thresh = suvParams.suvThreshold(i);
+%         countFiles = countFiles + 1;
+%         allSavedFiles{countFiles, 1} = newSuvSigFile;
+% 
+%         newSuvSigFile.img = zeros(size(oimg));
+%         allRoiSavedFiles{countFiles,1} = newSuvSigFile;
+%     end
+% end
+% 
+% % initial save SUVR_SIG_FILE (s)
+% if suvParams.isSaveSuvrThr % check whether SAVE SUV THRESH
+%     for i=1:length(suvParams.suvrThreshold)
+%         newSuvSigFile = SUVR_SIG_MEAN_FILE;
+%         newSuvSigFile.thresh = suvParams.suvrThreshold(i);
+%         countFiles = countFiles + 1;
+%         allSavedFiles{countFiles, 1} = newSuvSigFile;
+% 
+%         newSuvSigFile.img = zeros(size(oimg));
+%         allRoiSavedFiles{countFiles,1} = newSuvSigFile;
+%     end
+% end
 
 % only save files for whole brain, TODO: temp remove save
 % for i=1 : countFiles

@@ -1,16 +1,28 @@
-clear;
+% clear;
+function scr_write_to_Excel(saved_folder, list_file)
 % load list_file2.mat
-% saved_folder = 'D:\RESEARCH\spm8\toolbox\aal\saved\49 correct segment\1.55';
-%saved_folder = 'D:\RESEARCH\spm8\toolbox\aal\saved\49 correct segment\MNI space\wROI_MNI_V4_along_pet\gm extract thr 0_7\0.9';
-saved_folder = 'D:\RESEARCH\spm8\toolbox\aal\saved\49 correct segment May\2';
+% saved_folder = 'D:\RESEARCH\spm8\toolbox\aal\saved\49 correct segment May\2';
 
-load list_file_49_correct_segment.mat
-%saved_folder = 'D:\LEARN\fMRI\spm8\toolbox\aal\saved_40_addition';
+% load list_file_49_correct_segment.mat
 
-excelFilename = fullfile(saved_folder, 'testdataVol.xlsx');
+excelFilename = fullfile(saved_folder, 'volume.xlsx');
 sheet = 1;
 
 if exist('list_file', 'var')
+    
+    % rename Sheets
+%     if exist(excelFilename, 'file') ~= 2
+%         xlswrite(excelFilename,1); % # create test file
+%     end
+%     e = actxserver('Excel.Application'); % # open Activex server
+%     ewb = e.Workbooks.Open(excelFilename); % # open file (enter full path!)
+%     ewb.Worksheets.Item(1).Name = 'SUVR > ...'; % # rename 1st sheet
+%     ewb.Worksheets.Item(2).Name = 'SUV > ...'; % # rename 2nd sheet
+%     ewb.Worksheets.Item(3).Name = 'Original Volume'; % # rename 3rd sheet
+%     ewb.Save % # save to the same file
+%     ewb.Close(false)
+%     e.Quit
+    
     for typeVol = 1:3
         sheet = typeVol;
         title_arr = {'Name', 'Status'};
@@ -77,4 +89,5 @@ if exist('list_file', 'var')
             end
         end
     end
+    disp(['[SUCCESS] Finish write Volume to file: ' excelFilename])
 end

@@ -22,7 +22,7 @@ function varargout = runStep5(varargin)
 
 % Edit the above text to modify the response to help runStep5
 
-% Last Modified by GUIDE v2.5 15-Apr-2016 21:40:50
+% Last Modified by GUIDE v2.5 21-May-2017 04:31:26
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -61,7 +61,10 @@ guidata(hObject, handles);
 
 % UIWAIT makes runStep5 wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
-set(findall(handles.roiPanel, '-property', 'enable'), 'enable', 'off');
+
+% set(findall(handles.roiPanel, '-property', 'enable'), 'enable', 'off');
+set(findall(handles.step2Panel, '-property', 'enable'), 'enable', 'off');
+set(findall(handles.step3Panel, '-property', 'enable'), 'enable', 'off');
 
 
 % --- Outputs from this function are returned to the command line.
@@ -82,6 +85,7 @@ function cur_pathBtn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 str = spm_select(1,'dir','Select directory which involves PET image');
 set(handles.cur_path, 'string', str);
+set(handles.cur_path, 'tooltipString', str);
 
 
 
@@ -90,8 +94,27 @@ function job_dir_pathBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to job_dir_pathBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-str = spm_select(1,'dir','Select directory which involves involve job files');
-set(handles.job_dir_path, 'string', str);
+% str = spm_select(1,'dir','Select directory which involves involve job files');
+str = spm_select(1,'dir','Select SPM8 directory in your computer');
+if exist(fullfile(str, 'toolbox/aal/necessaryFiles'), 'dir') == 7
+    set(handles.job_dir_path, 'string', fullfile(str, 'toolbox/aal/necessaryFiles'));
+    set(handles.job_dir_path, 'tooltipString', fullfile(str, 'toolbox/aal/necessaryFiles'));
+    set(handles.file_info, 'string', fullfile(str, 'toolbox/aal/necessaryFiles/scaninfo.txt'));
+    set(handles.file_info, 'tooltipString', fullfile(str, 'toolbox/aal/necessaryFiles/scaninfo.txt'));
+    set(handles.aal_tpl_path, 'string', fullfile(str, 'toolbox/aal/necessaryFiles/ROI_MNI_V4.txt'));
+    set(handles.aal_tpl_path, 'tooltipString', fullfile(str, 'toolbox/aal/necessaryFiles/ROI_MNI_V4.txt'));
+    set(handles.listFileTxt, 'string', fullfile(str, 'toolbox/aal/necessaryFiles/list file for manual template/list_file_49_correct_segment.mat'));
+    set(handles.listFileTxt, 'tooltipString', fullfile(str, 'toolbox/aal/necessaryFiles/list file for manual template/list_file_49_correct_segment.mat'));
+    
+    set(handles.warningTag, 'foregroundColor', [0,0,1]);
+    set(handles.warningTag, 'string', 'OK!');
+    
+    set(handles.doneBtn, 'enable', 'on');
+else
+    set(handles.warningTag, 'foregroundColor', [1,0,0]);
+    set(handles.warningTag, 'string', 'DIRECTORY ADDRESS IS NOT EXACT, PLEASE CHOOSE AGAIN!');
+    set(handles.doneBtn, 'enable', 'off');
+end
 
 % --- Executes on button press in file_infoBtn.
 function file_infoBtn_Callback(hObject, eventdata, handles)
@@ -215,15 +238,13 @@ if ~checkManFieldsInLeft(handles)
     return;
 end
 
-set(findall(handles.roiPanel, '-property', 'enable'), 'enable', 'on');
+set(findall(handles.step2Panel, '-property', 'enable'), 'enable', 'on');
 set(findall(handles.filePanel, '-property', 'enable'), 'enable', 'off');
 hiddenAllChildren(handles.roiPanel, 'on');
 hiddenAllChildren(handles.filePanel, 'off');
 hiddenAllChildren(handles.suvPanel, 'off');
 hiddenAllChildren(handles.suvrPanel, 'off');
 set(handles.defRoiBtn, 'enable', 'off');
-
-
 
 
 % --- Executes on button press in cancelBtn.
@@ -365,6 +386,7 @@ function savedSuvImgBtn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 str = spm_select(1,'dir','Select directory to store SUV imgs');
 set(handles.savedSuvTxt, 'string', str);
+set(handles.savedSuvTxt, 'tooltipString', str);
 
 
 % --- Executes on button press in runBtn.
@@ -394,6 +416,10 @@ params.suvrThreshold = str2double(get(handles.suvrMapThrholdEdit, 'String'));
 params.subList = handles.subList; % TODO: check
 params.roiList = handles.roiList;
 
+if(get(handles.isSaveExcelTxt, 'Value'))
+    params.isSaveExcel = 1;
+end
+
 % temporaly disable "Run" button
 % set(handles.runBtn, 'enable', 'off');
 
@@ -401,12 +427,19 @@ params.roiList = handles.roiList;
 % MAIN FUNCTION
 [suv, suvall] = scr_fcn_run_all(params);
 
+if ~isstruct(suv)% error existed
+    return;
+end
+
 % save "suv, suvr" files
 save(fullfile(params.savedSuv, ['SUV_' datestr(clock,'mmmm_dd_yyyy HH_MM')]), 'suv');
 save(fullfile(params.savedSuv, ['SUVALL_' datestr(clock,'mmmm_dd_yyyy HH_MM')]), 'suvall');
 
 % enable back "Run" button
-set(handles.runBtn, 'enable', 'on');
+% Upgrade: now off for SAVE TO EXCEL RUNNING
+% set(handles.runBtn, 'enable', 'off');
+set(findall(handles.step2Panel, '-property', 'enable'), 'enable', 'off');
+set(findall(handles.step3Panel, '-property', 'enable'), 'enable', 'on');
 
 % --- Check whether all mandatory fields chosen with valid values
 function isOk = checkChosenManFields(handles)
@@ -617,3 +650,13 @@ if get(hObject,'Value')
     % set(handles.selRoiStt, 'String', sprintf('Done [%d]', numRoi));
     selectRoiCalSuvBtn_Callback(hObject, eventdata, handles);
 end
+
+
+% --- Executes on button press in saveExcelBtn.
+function saveExcelBtn_Callback(hObject, eventdata, handles)
+% hObject    handle to saveExcelBtn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.isSaveExcelTxt, 'Value', 1);
+runBtn_Callback(hObject, eventdata, handles);
+

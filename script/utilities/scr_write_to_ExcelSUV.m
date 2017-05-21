@@ -1,17 +1,25 @@
-clear;
-% load list_file2.mat
-% saved_folder = 'D:\RESEARCH\spm8\toolbox\aal\saved\49 correct segment\0.9';
-% saved_folder = 'D:\RESEARCH\spm8\toolbox\aal\saved\49 correct segment\MNI space\wROI_MNI_V4_along_mri\gm extract thr 0_7\0.9';
-saved_folder = 'D:\RESEARCH\spm8\toolbox\aal\saved\49 correct segment May\0.9';
-% excelFilename = fullfile(saved_folder, 'testdata.xlsx');
-
-load list_file_49_correct_segment.mat
-excelFilename = fullfile(saved_folder, 'testdataSuv.xlsx');
+%clear;
+function scr_write_to_Excel(saved_folder, list_file)
+% saved_folder = 'D:\RESEARCH\spm8\toolbox\aal\saved\49 correct segment May\0.9';
+%load list_file_49_correct_segment.mat
+excelFilename = fullfile(saved_folder, 'SUV_SUVR.xlsx');
 
 sheet = 1;
 SUV_id = {'SUV_max', 'SUV_mean', 'SUVR_max', 'SUVR_mean'};
 
 if exist('list_file', 'var')
+    % rename sheets
+%     if exist(excelFilename, 'file') ~= 2
+%         xlswrite(excelFilename,1); % # create test file
+%     end
+%     e = actxserver('Excel.Application'); % # open Activex server
+%     ewb = e.Workbooks.Open(excelFilename); % # open file (enter full path!)
+%     for idx = 1:length(SUV_id)
+%         ewb.Worksheets.Item(idx).Name = SUV_id{1,idx}; % # rename i-th sheet
+%     end
+%     ewb.Save % # save to the same file
+%     ewb.Close(false)
+%     e.Quit
     
     title_arr = {'Name', 'Status'};
     title_created = 0;
@@ -76,4 +84,5 @@ if exist('list_file', 'var')
             eval(sprintf('clear %s;', name));
         end
     end
+    disp(['[SUCCESS] Finish write SUV, SUVR to file: ' excelFilename])
 end

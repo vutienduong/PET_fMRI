@@ -88,6 +88,7 @@ explainStr = cell(1);
 explainStr{1,1} = 'Run step 1,2,3,4 with inputs are PET and MRI images';
 explainStr{2,1} = 'Run step 5 with inputs are all processed images after coregister, segment, matching...';
 explainStr{3,1} = 'Analyze stored SUV images, can specified SUV images or SUV.mat';
+% Run with stored SUV images
 set(handles.explainModeTxt, 'string', explainStr{selectedIdx,1});
 
 
@@ -117,7 +118,8 @@ switch selectedItem
     case 2
         runStep5();
     case 3
-        runOpt3();
+        set(handles.explainModeTxt, 'string', 'SORRY, THIS FUNCTION IS UPGRADED, PLEASE TRY THIS IN NEXT VERSION');
+        % runOpt3();
 end
 
 

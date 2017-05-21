@@ -184,8 +184,19 @@ function selJobDirBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to selJobDirBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-str = spm_select(1,'dir','Select directory which involves involve job files');
-set(handles.job_dir_path, 'string', str);
+% str = spm_select(1,'dir','Select directory which involves involve job files');
+str = spm_select(1,'dir','Select SPM8 directory in your computer');
+% check str is correct?
+if exist(fullfile(str, 'toolbox/aal/necessaryFiles'), 'dir') == 7
+    set(handles.job_dir_path, 'string', fullfile(str, 'toolbox/aal/necessaryFiles'));
+    set(handles.aal_file, 'string', fullfile(str, 'toolbox/aal/necessaryFiles/ROI_MNI_V4.nii'));
+    set(handles.warningTag, 'string', 'OK!');
+    set(handles.runBtn, 'enable', 'on');
+else
+    set(handles.warningTag, 'string', 'DIRECTORY ADDRESS IS NOT EXACT, PLEASE CHOOSE AGAIN!');
+    set(handles.runBtn, 'enable', 'off');
+end
+
 
 
 % --- Executes on button press in selAALBtn.
