@@ -22,7 +22,7 @@ function varargout = runStep5(varargin)
 
 % Edit the above text to modify the response to help runStep5
 
-% Last Modified by GUIDE v2.5 21-May-2017 04:31:26
+% Last Modified by GUIDE v2.5 02-Jun-2017 07:30:07
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -64,7 +64,8 @@ guidata(hObject, handles);
 
 % set(findall(handles.roiPanel, '-property', 'enable'), 'enable', 'off');
 set(findall(handles.step2Panel, '-property', 'enable'), 'enable', 'off');
-set(findall(handles.step3Panel, '-property', 'enable'), 'enable', 'off');
+% set(findall(handles.step3Panel, '-property', 'enable'), 'enable', 'off');
+% % DEBUG
 
 
 % --- Outputs from this function are returned to the command line.
@@ -406,6 +407,9 @@ params.steps = [0 0 0 0 1];
 params.runOpt3 = 1;
 params.savedSuv = get(handles.savedSuvTxt, 'string');
 
+params.isOnlyExcel = get(handles.onlyExcel, 'Value');
+params.isOnlyMap = get(handles.onlySuvMap, 'Value');
+
 params.isSaveSuvMap = get(handles.SuvMapChBox, 'Value');
 params.isSaveSuvThr = get(handles.SUVThCheckbox, 'Value');
 params.isSaveSuvrThr = get(handles.SUVRThCheckbox, 'Value');
@@ -660,3 +664,21 @@ function saveExcelBtn_Callback(hObject, eventdata, handles)
 set(handles.isSaveExcelTxt, 'Value', 1);
 runBtn_Callback(hObject, eventdata, handles);
 
+
+
+% --- Executes on button press in onlyExcel.
+function onlyExcel_Callback(hObject, eventdata, handles)
+% hObject    handle to onlyExcel (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of onlyExcel
+
+
+% --- Executes on button press in onlySuvMap.
+function onlySuvMap_Callback(hObject, eventdata, handles)
+% hObject    handle to onlySuvMap (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of onlySuvMap

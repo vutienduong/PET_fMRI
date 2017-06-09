@@ -258,7 +258,7 @@ tempSuvThr = 0.5;
         disp(['...run subject ', list_file(crun).name]);
         guiParams.subName = list_file(crun).name;
         suvValue = scr_func2(GM_PET_img, rTpl_img, ROI, params(crun), guiParams);
-        if isfield(suvValue, 'SUV_max')
+        if isstruct(suvValue) && isfield(suvValue, 'SUV_max')
             suv(crun).name = list_file(crun).name;
             suv(crun).value = suvValue;
         end
@@ -298,9 +298,9 @@ if IS_SAVE_EXCEL
 end
 
 %======ADDITION: calculate SUVR AVERAGE for POS, NEG subjs ======
-if CAL_AVG_SUVR && exist('suv','var') && ~IS_SAVE_EXCEL
-   suvall = scr_func_opt3_analyze( suv, list_file );
-end
+% if CAL_AVG_SUVR && exist('suv','var') && ~IS_SAVE_EXCEL
+%    suvall = scr_func_opt3_analyze( suv, list_file );
+% end
 
 if nargout == 2
     varargout{1} = suv;
