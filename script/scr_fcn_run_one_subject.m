@@ -3,7 +3,7 @@ function scr_fcn_run_one_subject(guiParams)
 cur_path = guiParams.cur_path;
 mri_img = guiParams.mri;
 pet_img = guiParams.pet;
-approach = guiParams.approach; % 1: old, 2: new
+approach = guiParams.approach; % 1: new, 2: old
 
 [mri_pathstr,mri_name,mri_ext] = fileparts(mri_img);
 [pet_pathstr,pet_name,pet_ext] = fileparts(pet_img);

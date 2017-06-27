@@ -22,7 +22,7 @@ function varargout = ver1_one_subject(varargin)
 
 % Edit the above text to modify the response to help ver1_one_subject
 
-% Last Modified by GUIDE v2.5 09-Jun-2017 06:37:13
+% Last Modified by GUIDE v2.5 25-Jun-2017 17:33:29
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -65,9 +65,6 @@ if exist(str, 'file')
         
         set(handles.selPetSttTxt, 'string', 'OK');
         set(handles.selPetSttTxt, 'tooltipString', deftSet('pet_file'));
-        
-        set(handles.selSpmSttTxt, 'string', 'OK');
-        set(handles.selSpmSttTxt, 'tooltipString', deftSet('spm_fold'));
         
         set(handles.selSavedSuvFoldTxt, 'string', 'OK');
         set(handles.selSavedSuvFoldTxt, 'tooltipString', deftSet('saved_suv_fold'));
@@ -165,8 +162,6 @@ function selSpmBtn_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 try
     str = spm_select(1,'dir','Select SPM8 folder in PC');
-    set(handles.selSpmSttTxt, 'string', 'OK');
-    set(handles.selSpmSttTxt, 'tooltipString', str);
 catch
     set(handles.errorTxt, 'string', 'Error!!! Please re-select SPM folder again');
 end
@@ -229,7 +224,7 @@ function runBtn_Callback(hObject, eventdata, handles)
     slashFindIdx = strfind(curPath, '\');
     params.cur_path = curPath(1: slashFindIdx(end) -1);
 
-    params.job_dir_path = fullfile(get(handles.selSpmSttTxt, 'tooltipString'), '\toolbox\aal\necessaryFiles');
+    params.job_dir_path = fullfile(scr_get_spm8_dir(), '\toolbox\aal\necessaryFiles');
     params.savedSuv = get(handles.selSavedSuvFoldTxt, 'tooltipString');
     params.mri = get(handles.selMriSttTxt, 'tooltipString');
     params.pet = get(handles.selPetSttTxt, 'tooltipString');
@@ -268,7 +263,6 @@ function saveHistoryDefaultSetting(handles, str)
 str = 'VAR_NAME\tVAR_VALUE\n';
 s_strs = {get(handles.selMriSttTxt, 'tooltipString');...
     get(handles.selPetSttTxt, 'tooltipString');...
-    get(handles.selSpmSttTxt, 'tooltipString');...
     get(handles.selSavedSuvFoldTxt, 'tooltipString');...
 
     get(handles.binThreshTxt, 'string');...
@@ -286,7 +280,7 @@ for i =1:length(var_name_arr)
 end
 str = [ str  'time' '\t' s_strs{9,1} '\n'];
 
-fileName = fullfile(get(handles.selSpmSttTxt, 'tooltipString'), 'toolbox\aal\PET_fMRI\script\new_gui\history_default.txt');
+fileName = fullfile(get(scr_get_spm8_dir(), 'toolbox\pet_mri_tool\necessaryFiles\history_default.txt'));
 fileID = fopen(fileName,'w');
 fprintf(fileID,str);
 fclose(fileID);
@@ -318,10 +312,6 @@ end
 
 if isempty(get(handles.selSavedSuvFoldTxt, 'tooltipString'))
     set(handles.errorTxt, 'string', all_errors.miss_saved_suv_fold); return;
-end
-
-if isempty(get(handles.selSpmSttTxt, 'tooltipString'))
-    set(handles.errorTxt, 'string', all_errors.miss_spm_fold); return;
 end
 
 bin_thresh_value = get(handles.binThreshTxt, 'string');
@@ -370,9 +360,10 @@ function popupmenu1_Callback(hObject, eventdata, handles)
 % contents = cellstr(get(hObject,'String'));
 selectedItem = {get(hObject,'Value')};
 selectedIdx = selectedItem{1,1};
-explainStr = cell(1);
-explainStr{1,1} = 'Step 1: Coregister PET to MRI -> rPET, \n Step 2: Segment MRI -> WM, GM .... \n Step 3: Matching WM to rPET -> m_rPET ... \n Step 4: Inversely normalizing AAL temp to MRI -> rROI_MNI_V4';
-explainStr{2,1} = 'Step 1: Coregister PET to MRI along with AAL -> rPET, rAAL, \n Step 2: Segment MRI -> WM, GM .... \n Step 3: Matching WM to rPET -> m_rPET ... \n Step 4: Coregister rAAL temp to MRI -> rrAAL';
+explainStr = scr_get_setting('explain_method_new_old');
+% explainStr{1,1} = 'Step 1: Coregister PET to MRI -> rPET, \n Step 2: Segment MRI -> WM, GM .... \n Step 3: Matching WM to rPET -> m_rPET ... \n Step 4: Inversely normalizing AAL temp to MRI -> rROI_MNI_V4';
+% explainStr{2,1} = 'Step 1: Coregister PET to MRI along with AAL -> rPET, rAAL, \n Step 2: Segment MRI -> WM, GM .... \n Step 3: Matching WM to rPET -> m_rPET ... \n Step 4: Coregister rAAL temp to MRI -> rrAAL';
+
 set(handles.explainMethodTxt, 'string', explainStr{selectedIdx,1});
 
 
@@ -387,3 +378,10 @@ function popupmenu1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes during object creation, after setting all properties.
+function explainMethodTxt_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to explainMethodTxt (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called

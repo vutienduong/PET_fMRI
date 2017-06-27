@@ -1,4 +1,5 @@
 function [varargout] = scr_fcn_run_all(guiParams)
+% New method: 1. Coreg, 2. Segment, 3. Matching, 4. Inv Norm
 % Set directory inclusdes all processed files
 mapStt = scr_get_Status();
 cur_path = guiParams.cur_path;
