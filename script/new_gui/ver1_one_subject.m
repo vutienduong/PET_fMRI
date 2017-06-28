@@ -22,7 +22,7 @@ function varargout = ver1_one_subject(varargin)
 
 % Edit the above text to modify the response to help ver1_one_subject
 
-% Last Modified by GUIDE v2.5 25-Jun-2017 17:33:29
+% Last Modified by GUIDE v2.5 29-Jun-2017 02:48:12
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -224,7 +224,7 @@ function runBtn_Callback(hObject, eventdata, handles)
     slashFindIdx = strfind(curPath, '\');
     params.cur_path = curPath(1: slashFindIdx(end) -1);
 
-    params.job_dir_path = fullfile(scr_get_spm8_dir(), '\toolbox\aal\necessaryFiles');
+    params.job_dir_path = fullfile(scr_get_spm8_dir(), '\toolbox\pet_mri_tool\necessaryFiles');
     params.savedSuv = get(handles.selSavedSuvFoldTxt, 'tooltipString');
     params.mri = get(handles.selMriSttTxt, 'tooltipString');
     params.pet = get(handles.selPetSttTxt, 'tooltipString');
@@ -241,6 +241,7 @@ function runBtn_Callback(hObject, eventdata, handles)
     params.file_info = file_info;
     params.binThresh = str2num(get(handles.binThreshTxt, 'string'));
     params.approach = get(handles.popupmenu1, 'value'); % default is 2
+    params.status = get(handles.sttPopup, 'value'); % 1 : Positive, 2: Negative
     setNotify(handles, '[INFO] RUNNING');
     
 
@@ -273,14 +274,14 @@ s_strs = {get(handles.selMriSttTxt, 'tooltipString');...
 
 s_strs = strrep(s_strs, '\', '\\');
 
-var_name_arr = {'mri_file', 'pet_file', 'spm_fold', 'saved_suv_fold', ...
+var_name_arr = {'mri_file', 'pet_file', 'saved_suv_fold', ...
     'bin_thresh', 'subject_name', 'body_weight', 'dosage'};
 for i =1:length(var_name_arr)
     str = [ str var_name_arr{1,i} '\t' s_strs{i,1} '\n'];
 end
-str = [ str  'time' '\t' s_strs{9,1} '\n'];
+str = [ str  'time' '\t' s_strs{8,1} '\n'];
 
-fileName = fullfile(get(scr_get_spm8_dir(), 'toolbox\pet_mri_tool\necessaryFiles\history_default.txt'));
+fileName = fullfile(scr_get_spm8_dir(), 'toolbox\pet_mri_tool\necessaryFiles\history_default.txt');
 fileID = fopen(fileName,'w');
 fprintf(fileID,str);
 fclose(fileID);
@@ -385,3 +386,47 @@ function explainMethodTxt_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to explainMethodTxt (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes on slider movement.
+function slider1_Callback(hObject, eventdata, handles)
+% hObject    handle to slider1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+
+% --- Executes during object creation, after setting all properties.
+function slider1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to slider1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% --- Executes on selection change in sttPopup.
+function sttPopup_Callback(hObject, eventdata, handles)
+% hObject    handle to sttPopup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns sttPopup contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from sttPopup
+
+% --- Executes during object creation, after setting all properties.
+function sttPopup_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sttPopup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

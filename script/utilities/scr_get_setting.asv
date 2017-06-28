@@ -22,6 +22,6 @@ switch(kw)
         vl = cell(1);
         vl{1,1} = '(Multi subjects) I. Create ''WM extracted'' images from multiple PET, MRI images';
         vl{2,1} = '(Multi subjects) II. Calculate SUV, SUVR, VOLUME from ''WM extracted'' images created in step I.';
-        vl{3,1} = '(One subject) Calculate SUV, SUVR, VOLUME from a pair PET-MRI of a subject';
+        vl{3,1} = '(One subject) Calculate SUV, SUVR, VOLUME from';
 end
      

@@ -182,16 +182,24 @@ if suvParams.isOnlyExcel
 
 
         % volume
-        volume = struct();
-        volume.original = length(maskedImgFind) * VOX_UNIT;
-        volume.largerSuvThresh = sum(nonZerosVox > suvParams.suvThreshold(1) / multiplier) * VOX_UNIT;
-        volume.largerSuvrThresh = sum(nonZerosVox > suvParams.suvrThreshold(1)  * SUV_ref_mean / multiplier) * VOX_UNIT;
+        suv(i).volOriginal = length(maskedImgFind) * VOX_UNIT;
+        suv(i).volLargerSUV = scr_all_utility('assignVolumeFollowThresh', suvParams.suvThreshold, nonZerosVox, multiplier, VOX_UNIT);
+        suv(i).volLargerSUVR = scr_all_utility('assignVolumeFollowThresh', suvParams.suvrThreshold, nonZerosVox, multiplier, VOX_UNIT);
+%         if length(suvParams.suvThreshold) > 1
+%             tsuv = cell(1);
+%             tsuv{1,1} = 'thresh';
+%             tsuv{1,2} = 'volume';
+%             for j=1:length(suvParams.suvThreshold)
+%                 tsuv(j+1,1) = suvParams.suvThreshold(i);
+%                 tsuv(j+1,2) = sum(nonZerosVox > suvParams.suvThreshold(j) / multiplier) * VOX_UNIT;
+%             end
+%         else
+%             suv(i).volLargerSuvThresh = sum(nonZerosVox > suvParams.suvThreshold(1) / multiplier) * VOX_UNIT;
+%         end
 
         %volume.intensity = nonZerosVox;
         %[x,y,z] = ind2sub(size(oimg), maskedImgFind);
         %volume.coord = [x y z]';
-
-        suv(i).otherInfo = volume;
 
         % update suv, suvr along to ROI to allRoiSavedFiles
         for j=1:length(allRoiSavedFiles)
@@ -207,6 +215,7 @@ if suvParams.isOnlyExcel
     % save Suv temp
     eval(sprintf('SUV_%s = suv;', suvParams.subName)); 
     save( fullfile( suvParams.savedSuv,['SUV_' suvParams.subName '.mat']) ,['SUV_' suvParams.subName]);
+end
 end
 
 % % Save for selected ROIs along to, TODO: temp remove save

@@ -84,48 +84,9 @@ function cur_pathBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to cur_pathBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-str = spm_select(1,'dir','Select directory which involves PET image');
+str = uigetdir('Select directory which involves ''extracted WM'' image');
 set(handles.cur_path, 'string', str);
 set(handles.cur_path, 'tooltipString', str);
-
-
-
-% --- Executes on button press in job_dir_pathBtn.
-function job_dir_pathBtn_Callback(hObject, eventdata, handles)
-% hObject    handle to job_dir_pathBtn (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% str = spm_select(1,'dir','Select directory which involves involve job files');
-str = spm_select(1,'dir','Select SPM8 directory in your computer');
-if exist(fullfile(str, 'toolbox/aal/necessaryFiles'), 'dir') == 7
-    set(handles.job_dir_path, 'string', fullfile(str, 'toolbox/aal/necessaryFiles'));
-    set(handles.job_dir_path, 'tooltipString', fullfile(str, 'toolbox/aal/necessaryFiles'));
-    set(handles.file_info, 'string', fullfile(str, 'toolbox/aal/necessaryFiles/scaninfo.txt'));
-    set(handles.file_info, 'tooltipString', fullfile(str, 'toolbox/aal/necessaryFiles/scaninfo.txt'));
-    set(handles.aal_tpl_path, 'string', fullfile(str, 'toolbox/aal/necessaryFiles/ROI_MNI_V4.txt'));
-    set(handles.aal_tpl_path, 'tooltipString', fullfile(str, 'toolbox/aal/necessaryFiles/ROI_MNI_V4.txt'));
-    set(handles.listFileTxt, 'string', fullfile(str, 'toolbox/aal/necessaryFiles/list file for manual template/list_file_49_correct_segment.mat'));
-    set(handles.listFileTxt, 'tooltipString', fullfile(str, 'toolbox/aal/necessaryFiles/list file for manual template/list_file_49_correct_segment.mat'));
-    
-    set(handles.warningTag, 'foregroundColor', [0,0,1]);
-    set(handles.warningTag, 'string', 'OK!');
-    
-    set(handles.doneBtn, 'enable', 'on');
-else
-    set(handles.warningTag, 'foregroundColor', [1,0,0]);
-    set(handles.warningTag, 'string', 'DIRECTORY ADDRESS IS NOT EXACT, PLEASE CHOOSE AGAIN!');
-    set(handles.doneBtn, 'enable', 'off');
-end
-
-% --- Executes on button press in file_infoBtn.
-function file_infoBtn_Callback(hObject, eventdata, handles)
-% hObject    handle to file_infoBtn (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-[file, pathstr] = uigetfile('.txt' ,'Select info file included Weight, Dosage, Time, Half life INFO.');
-str = fullfile(pathstr, file);
-set(handles.file_info, 'string', str);
-
 
 function cur_path_Callback(hObject, eventdata, handles)
 % hObject    handle to cur_path (see GCBO)
@@ -147,86 +108,6 @@ function cur_path_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-
-function job_dir_path_Callback(hObject, eventdata, handles)
-% hObject    handle to job_dir_path (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of job_dir_path as text
-%        str2double(get(hObject,'String')) returns contents of job_dir_path as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function job_dir_path_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to job_dir_path (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function file_info_Callback(hObject, eventdata, handles)
-% hObject    handle to file_info (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of file_info as text
-%        str2double(get(hObject,'String')) returns contents of file_info as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function file_info_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to file_info (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on button press in aal_tpl_pathBtn.
-function aal_tpl_pathBtn_Callback(hObject, eventdata, handles)
-% hObject    handle to aal_tpl_pathBtn (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-[file, path] = uigetfile('.txt' ,'Select AAL template file (ROI_MNI_V4.txt).');
-str = fullfile(path, file);
-set(handles.aal_tpl_path, 'string', str);
-
-
-
-function aal_tpl_path_Callback(hObject, eventdata, handles)
-% hObject    handle to aal_tpl_path (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of aal_tpl_path as text
-%        str2double(get(hObject,'String')) returns contents of aal_tpl_path as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function aal_tpl_path_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to aal_tpl_path (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
 
 % --- Executes on button press in doneBtn.
 function doneBtn_Callback(hObject, eventdata, handles)
@@ -261,7 +142,7 @@ function selectRoiCalSuvBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to selectRoiCalSuvBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-roifile = get(handles.aal_tpl_path,'string');
+roifile = fullfile(scr_get_spm8_dir(), 'toolbox\pet_mri_tool\necessaryFiles\ROI_MNI_V4.txt');
 t = readtable(roifile,'Delimiter','\t','ReadVariableNames',false);
 
 % older than version 2013
@@ -399,13 +280,10 @@ end
 
 % prepare params and run "scr_fcn_run_all"
 params = struct();
+spmfold = scr_get_spm8_dir();
 params.cur_path = get(handles.cur_path, 'string');
-params.job_dir_path = get(handles.job_dir_path, 'string');
-params.file_info = get(handles.file_info, 'string');
-params.list_file = get(handles.listFileTxt, 'string');
-params.steps = [0 0 0 0 1];
-params.runOpt3 = 1;
 params.savedSuv = get(handles.savedSuvTxt, 'string');
+params.job_dir_path = fullfile(spmfold, 'toolbox\pet_mri_tool\necessaryFiles');
 
 params.isOnlyExcel = get(handles.onlyExcel, 'Value');
 params.isOnlyMap = get(handles.onlySuvMap, 'Value');
@@ -414,8 +292,8 @@ params.isSaveSuvMap = get(handles.SuvMapChBox, 'Value');
 params.isSaveSuvThr = get(handles.SUVThCheckbox, 'Value');
 params.isSaveSuvrThr = get(handles.SUVRThCheckbox, 'Value');
 
-params.suvThreshold = str2double(get(handles.suvMapThrholdEdit, 'String'));
-params.suvrThreshold = str2double(get(handles.suvrMapThrholdEdit, 'String'));
+params.suvThreshold = convertStr2Num(get(handles.suvMapThrholdEdit, 'String'));
+params.suvrThreshold = convertStr2Num(get(handles.suvrMapThrholdEdit, 'String'));
 
 params.subList = handles.subList; % TODO: check
 params.roiList = handles.roiList;
@@ -424,26 +302,20 @@ if(get(handles.isSaveExcelTxt, 'Value'))
     params.isSaveExcel = 1;
 end
 
-% temporaly disable "Run" button
-% set(handles.runBtn, 'enable', 'off');
-
 % call main function
 % MAIN FUNCTION
-[suv, suvall] = scr_fcn_run_all(params);
-
-if ~isstruct(suv)% error existed
-    return;
-end
-
-% save "suv, suvr" files
-save(fullfile(params.savedSuv, ['SUV_' datestr(clock,'mmmm_dd_yyyy HH_MM')]), 'suv');
-save(fullfile(params.savedSuv, ['SUVALL_' datestr(clock,'mmmm_dd_yyyy HH_MM')]), 'suvall');
+[~, ~] = scr_fcn_run_all_with_excel_cal_vol(params);
 
 % enable back "Run" button
-% Upgrade: now off for SAVE TO EXCEL RUNNING
-% set(handles.runBtn, 'enable', 'off');
-set(findall(handles.step2Panel, '-property', 'enable'), 'enable', 'off');
-set(findall(handles.step3Panel, '-property', 'enable'), 'enable', 'on');
+% set(findall(handles.step2Panel, '-property', 'enable'), 'enable', 'off');
+% set(findall(handles.step3Panel, '-property', 'enable'), 'enable', 'on');
+
+% --- Convert threshold string to NUMBER or an array of NUMBERs
+function rs = convertStr2Num(str)
+if strfind(str, ',')
+    str = strsplit(str, ',');    
+end
+rs = str2double(str);
 
 % --- Check whether all mandatory fields chosen with valid values
 function isOk = checkChosenManFields(handles)
@@ -467,42 +339,39 @@ if strcmp(get(handles.selSubStt, 'String'), 'N/A')
     return;
 end
 
-if isnan(str2double(get(handles.suvMapThrholdEdit, 'String')))
-    warndlg('Please set SUV threshold as a NUMBER !');
+% if isnan(str2double(get(handles.suvMapThrholdEdit, 'String')))
+if ~checkThreshInputValue(get(handles.suvMapThrholdEdit, 'String'))
+    warndlg('Please set SUV threshold as a NUMBER or a list of NUMBER separating by comma ('','')!');
     return;
 end
 
-if isnan(str2double(get(handles.suvrMapThrholdEdit, 'String')))
-    warndlg('Please set SUVR threshold as a NUMBER !');
+% if isnan(str2double(get(handles.suvrMapThrholdEdit, 'String')))
+if ~checkThreshInputValue(get(handles.suvrMapThrholdEdit, 'String'))
+    warndlg('Please set SUVR threshold as a NUMBER or a list of NUMBER separating by comma ('','')!');
     return;
 end
 
 isOk = true;
 
+function r = checkThreshInputValue(str)
+    if strfind(str, ',')
+        split_str = strsplit(str, ',');
+        for i =1:length(split_str)
+            if isnan(str2double(split_str{1,i}))
+                r = false;
+                return;
+            end
+        end
+    else
+        r = ~isnan(str2double(str));
+        return;
+    end
+    r = true;
+
 function r = checkManFieldsInLeft(handles)
 r = false;
 if ~exist(get(handles.cur_path, 'String'), 'dir')
     warndlg('Please choose DIRECTORY included result images of step 1,2,3 and 4 at [1] !');
-    return;
-end
-
-if ~exist(get(handles.job_dir_path, 'String'), 'dir')
-    warndlg('Please choose DIRECTORY included job files at [2] !');
-    return;
-end
-
-if ~exist(get(handles.file_info, 'String'), 'file')
-    warndlg('Please choose Personal Info FILE (included Weight, Dosage, Time ...) at [3] !');
-    return;
-end
-
-if ~exist(get(handles.aal_tpl_path, 'String'), 'file')
-     warndlg('Please choose Template Definition FILE "ROI_MNI_V4.txt" at [4] !');
-     return;
-end
-
-if ~exist(get(handles.listFileTxt, 'String'), 'file')
-    warndlg('Please choose Matlab FILE defined details of images "list_file2.mat" at [5] !');
     return;
 end
 
@@ -528,16 +397,12 @@ function dfSetFileBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to dfSetFileBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[str, filePath] = uigetfile('.txt' ,'Select default setting file (DEFAULT_SETTINGS.txt).');
+[str, filePath] = uigetfile('.txt' ,'Select default setting file (DEFAULT_SETTINGS5.txt).');
 str = fullfile(filePath, str);
 if exist(str, 'file')
     t = readtable(str,'Delimiter','\t','ReadVariableNames',true);
     deftSet = containers.Map(t.VAR_NAME,t.VAR_VALUE);
     set(handles.cur_path, 'string', deftSet('cur_path'));
-    set(handles.job_dir_path, 'string', deftSet('job_dir_path'));
-    set(handles.file_info, 'string', deftSet('file_info'));
-    set(handles.aal_tpl_path, 'string', deftSet('aal_tpl_path'));
-    set(handles.listFileTxt, 'string', deftSet('list_file'));
     set(handles.savedSuvTxt, 'string', deftSet('savedSuv'));
 end
 
@@ -547,30 +412,31 @@ function selSubBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to selSubBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-subfile = get(handles.listFileTxt,'string');
-load(subfile);
-% temp = extractfield(list_file, 'name');
-temp = {list_file(:).name}; %TODO extractfield is undefined function
-if isfield(handles, 'subList')
-    init_vals = handles.subList;
-else
-    init_vals = 1;
-end
-if exist('list_file', 'var')
+try
+    load(fullfile(scr_get_spm8_dir(), 'toolbox\pet_mri_tool\necessaryFiles\tempListFile.mat'));
+    % temp = extractfield(list_file, 'name');
+    temp = {list_file(:).name};
+    if isfield(handles, 'subList')
+        init_vals = handles.subList;
+    else
+        init_vals = 1;
+    end
     [s,v] = listdlg('PromptString','Select subjects needed analyzing:',...
                 'SelectionMode','multiple',...
                 'ListString',temp,...
                 'Name', 'Select subjects',...
                 'ListSize',[200 300],...
                 'InitialValue', init_vals);
-end
 
-if v % choose OK
-    handles.subList = s;
-    guidata(hObject,handles);
-    set(handles.selSubStt,'String',sprintf('Done [%d]', length(s)));
+    if v % choose OK
+        handles.subList = s;
+        guidata(hObject,handles);
+        set(handles.selSubStt,'String',sprintf('Done [%d]', length(s)));
+    end
+catch
+    warndlg('Please run step [Multi subject I] first.');
+    return;
 end
-
 
 % --- Executes on button press in SuvMapChBox.
 function SuvMapChBox_Callback(hObject, eventdata, handles)
@@ -586,44 +452,29 @@ function selDirSavDefSetBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to selDirSavDefSetBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-str = spm_select(1,'dir','Select directory to save above settings');
-if exist(str, 'dir')
-    handles.savDefSetDir = str;
-    guidata(hObject,handles);
-    set(handles.selDirSavDefSetStt, 'string', 'Done');
-    set(handles.doneSavDefSetBtn, 'enable', 'on');
+try
+    strdir = uigetdir('Select directory to save above settings');
+    if exist(strdir, 'dir')
+%         handles.savDefSetDir = str;
+%         guidata(hObject,handles);
+        str = 'VAR_NAME\tVAR_VALUE\n';
+        s_strs = {get(handles.cur_path, 'string'); get(handles.savedSuvTxt, 'string')};
+        s_strs = strrep(s_strs, '\', '\\');
+
+        str = [ str 'cur_path' '\t' s_strs{1,1} '\n'];
+        str = [ str 'savedSuv' '\t' s_strs{2,1} ];
+
+        fileName = fullfile(strdir, 'DEFAULT_SETTINGS_5.txt');
+        fileID = fopen(fileName,'w');
+        fprintf(fileID,str);
+        fclose(fileID);
+        set(hObject,'enable','off');
+        set(handles.selDirSavDefSetStt, 'string', 'Done');
+    end
+catch
+    warndlg('Please select valid folder to save above setting.');
+    return;
 end
-
-
-% --- Executes on button press in doneSavDefSetBtn.
-function doneSavDefSetBtn_Callback(hObject, eventdata, handles)
-% hObject    handle to doneSavDefSetBtn (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-str = 'VAR_NAME\tVAR_VALUE\n';
-s_strs = {get(handles.cur_path, 'string');...
-    get(handles.job_dir_path, 'string');...
-    get(handles.file_info, 'string');...
-    get(handles.aal_tpl_path, 'string');...
-    get(handles.listFileTxt, 'string');...
-    get(handles.savedSuvTxt, 'string')};
-
-s_strs = strrep(s_strs, '\', '\\');
-
-str = [ str 'cur_path' '\t' s_strs{1,1} '\n'];
-str = [ str  'job_dir_path' '\t' s_strs{2,1} '\n'];
-str = [ str  'file_info' '\t' s_strs{3,1} '\n'];
-str = [ str  'aal_tpl_path' '\t' s_strs{4,1} '\n'];
-str = [ str 'list_file' '\t' s_strs{5,1} '\n'];
-str = [ str  'savedSuv' '\t' s_strs{6,1} ];
-
-fileName = fullfile(handles.savDefSetDir, 'DEFAULT_SETTINGS_5.txt');
-fileID = fopen(fileName,'w');
-fprintf(fileID,str);
-fclose(fileID);
-set(hObject,'enable','off');
-
 
 % --- Executes on button press in radiobutton1.
 function radiobutton1_Callback(hObject, eventdata, handles)

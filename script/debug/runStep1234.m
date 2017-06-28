@@ -131,16 +131,26 @@ params.steps = [1 1 1 1 0];
 scaninfo = struct();
 scaninfo.filename = get(handles.scaninfo_file, 'string');
 sheet_int = str2num(get(handles.sheetEditTxt, 'string'));
+
+% check if sheet index is integer
 if floor(sheet_int)== sheet_int
     scaninfo.sheet = sheet_int;
 else
     warndlg('Sheet index should be an integer number. Please re-type.');
     return;
 end
-load(fullfile(scr_get_spm8_dir(),'toolbox\pet_mri_tool\necessaryFiles\temp.mat'));
+
+% check if existing file temp.mat in necessaryFiles
+try 
+    load(fullfile(scr_get_spm8_dir(),'toolbox\pet_mri_tool\necessaryFiles\temp.mat'));
+    scaninfo.setCol = setColData;
+    scaninfo.cols = sVals2i;
+catch
+    warndlg('Please Set Column index by "Set Column" button to read patient info Excel file !');
+    return;
+end
 % scaninfo.setCol = get(hObject, 'UserData');
-scaninfo.setCol = setColData;
-scaninfo.cols = sVals2i;
+
 params.scaninfo = scaninfo;
 params.approach = get(handles.popupmenu1, 'value'); % default is 2
 %scr_fcn_run_all(params);

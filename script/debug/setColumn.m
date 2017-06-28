@@ -22,7 +22,7 @@ function varargout = setColumn(varargin)
 
 % Edit the above text to modify the response to help setColumn
 
-% Last Modified by GUIDE v2.5 27-Jun-2017 17:38:31
+% Last Modified by GUIDE v2.5 28-Jun-2017 13:38:02
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -223,8 +223,9 @@ function runBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to runBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-sKeys = {'name', 'pet', 'mri', 'weight', 'dosage', 'time', 'header'};
+sKeys = {'name', 'status', 'pet', 'mri', 'weight', 'dosage', 'time', 'header'};
 sVals = {get(handles.nameEditTxt, 'String'),...
+    get(handles.statusEditTxt, 'String'),...
     get(handles.petEditTxt, 'String'),...
     get(handles.mriEditTxt, 'String'),...
     get(handles.weightEditTxt, 'String'),...
@@ -262,8 +263,32 @@ function defaultBtn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.nameEditTxt, 'String', 'K');
+set(handles.statusEditTxt, 'String', 'G');
 set(handles.mriEditTxt, 'String', 'J');
 set(handles.petEditTxt, 'String', 'I');
 set(handles.weightEditTxt, 'String', 'L');
 set(handles.dosageEditTxt, 'String', 'M');
 set(handles.timeEditTxt, 'String', 'N');
+
+
+
+function statusEditTxt_Callback(hObject, eventdata, handles)
+% hObject    handle to statusEditTxt (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of statusEditTxt as text
+%        str2double(get(hObject,'String')) returns contents of statusEditTxt as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function statusEditTxt_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to statusEditTxt (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
