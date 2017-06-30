@@ -96,8 +96,8 @@ else
     THRESHOLD = 0.3; % default
 end
 
-
 %% ==================STEP 1: coregister PET -> MRI==================
+hwait = waitbar(0,'Coregister PET to MRI', 'Name', 'Progress of 4 steps...');
 if approach == 2 % OLD
     jobfile = {fullfile(job_dir_path, 'step1_job.m')};
     jobs = repmat(jobfile, 1, nrun);
@@ -129,6 +129,7 @@ else % NEW
     spm_jobman('serial', jobs, '', inputs{:});    
 end
 disp('===========FINISH STEP 1: Coregister PET to MRI ===========');
+waitbar(1/4,hwait,sprintf('Done %d / %d steps, Current: %s',1,4, 'Segementation of MRI'));
 
 %% ==================STEP 2: segment MRI==================
 jobfile = {fullfile(job_dir_path, 'step2_job.m')};
@@ -140,6 +141,7 @@ end
 spm('defaults', 'FMRI');
 spm_jobman('serial', jobs, '', inputs{:});
 disp('===========FINISH STEP 2: Segment MRI ===========');
+waitbar(2/4,hwait,sprintf('Done %d / %d steps, Current: %s',2,4, 'Matching'));
 
 %% ==================STEP 3: matching==================
 saved_prefix = 'm_'; % wm_ext_, i_wm_ext
@@ -151,6 +153,7 @@ for crun = 1:nrun
     scr_masking_pet(pet_file, mask_file, THRESHOLD, is_inverse, saved_prefix);
 end
 disp('===========FINISH STEP 3===========');
+waitbar(3/4,hwait,sprintf('Done %d / %d steps, Current: %s',3,4, 'Transform ROI_MNI template to MRI space'));
 
 %% ==================STEP 4: ROI_MNI -> MRI ==================
 if approach == 2 % OLD: coregister ROI_MNI -> MRI
@@ -181,3 +184,5 @@ else % NEW: Inversely normalized ROI_MNI -> MRI
     spm_jobman('serial', jobs, '', inputs{:});
     disp('===========Done STEP 4: Inverse Normalization ===========');
 end
+waitbar(4/4,hwait,sprintf('Done %d / %d steps',4,4));
+close(hwait);

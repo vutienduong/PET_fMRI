@@ -84,7 +84,7 @@ function cur_pathBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to cur_pathBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-str = uigetdir('Select directory which involves ''extracted WM'' image');
+str = uigetdir('','Select directory which involves ''extracted WM'' image');
 set(handles.cur_path, 'string', str);
 set(handles.cur_path, 'tooltipString', str);
 
@@ -266,7 +266,7 @@ function savedSuvImgBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to savedSuvImgBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-str = spm_select(1,'dir','Select directory to store SUV imgs');
+str = uigetdir('','Select directory to store SUV imgs');
 set(handles.savedSuvTxt, 'string', str);
 set(handles.savedSuvTxt, 'tooltipString', str);
 
@@ -303,8 +303,9 @@ if(get(handles.isSaveExcelTxt, 'Value'))
 end
 
 % call main function
-% MAIN FUNCTION
+%set(handles.runBtn, 'enable', 'off');
 [~, ~] = scr_fcn_run_all_with_excel_cal_vol(params);
+%set(handles.runBtn, 'enable', 'on');
 
 % enable back "Run" button
 % set(findall(handles.step2Panel, '-property', 'enable'), 'enable', 'off');
@@ -453,7 +454,7 @@ function selDirSavDefSetBtn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 try
-    strdir = uigetdir('Select directory to save above settings');
+    strdir = uigetdir('','Select directory to save above settings');
     if exist(strdir, 'dir')
 %         handles.savDefSetDir = str;
 %         guidata(hObject,handles);

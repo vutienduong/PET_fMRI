@@ -53,31 +53,41 @@ end
 disp([ 'Run for SUVR thresh: ' num2str(guiParams.suvrThreshold)]);
 disp([ 'Run for SUV thresh: ' num2str(guiParams.suvThreshold)]);
 
+hwait = waitbar(0,'Start', 'Name', sprintf('Progress of %d subjects', nrun));
 for crun = 1:nrun
-    disp(['...run subject ', list_file(crun).name]);
-    pet_img = list_file(crun).pet;
-    pet_hdr = [pet_img(1:(end-3)) 'hdr'];
-    
-    if approach == 2 % old
-        rTpl_img = fullfile(cur_path, ['rr' list_file(crun).name 'ROI_MNI_V4.nii,1']);
-    else % new
-        rTpl_img = fullfile(cur_path, ['w' list_file(crun).name 'ROI_MNI_V4.nii,1']);
+%     disp(['...run subject ', list_file(crun).name]);
+     try
+        pet_img = list_file(crun).pet;
+        pet_hdr = [pet_img(1:(end-3)) 'hdr'];
+
+        if approach == 2 % old
+            rTpl_img = fullfile(cur_path, ['rr' list_file(crun).name 'ROI_MNI_V4.nii,1']);
+        else % new
+            rTpl_img = fullfile(cur_path, ['w' list_file(crun).name 'ROI_MNI_V4.nii,1']);
+        end
+
+        GM_PET_img = fullfile(cur_path, ['m_r' pet_hdr ',1']);
+        guiParams.subName = list_file(crun).name;
+        suvValue = scr_func2(GM_PET_img, rTpl_img, ROI, list_file(crun), guiParams);
+        if isstruct(suvValue) && isfield(suvValue, 'SUV_max')
+            suv(crun).name = list_file(crun).name;
+            suv(crun).status = list_file(crun).status;
+            suv(crun).value = suvValue;
+            writeFile = fullfile(guiParams.savedSuv, ['RESULT_' suv(crun).name '.csv']);
+            writetable(struct2table(suv(crun).value), writeFile,'Delimiter',',');
+        end
+        disp(['[DONE] ... ', list_file(crun).name]);
+        disp('__________________________________');
+        disp(' ');
+        waitbar(crun/nrun,hwait,sprintf('Done %d / %d subjects, Fail: %s',crun,nrun, list_file(crun).name));
+    catch
+        disp(['[FAIL] ... ', list_file(crun).name]);
+        disp('__________________________________');
+        disp(' ');
+        waitbar(crun/nrun,hwait,sprintf('Done %d / %d subjects, Finish: %s',crun,nrun, list_file(crun).name));
     end
-    
-    GM_PET_img = fullfile(cur_path, ['m_r' pet_hdr ',1']);
-    guiParams.subName = list_file(crun).name;
-    suvValue = scr_func2(GM_PET_img, rTpl_img, ROI, list_file(crun), guiParams);
-    if isstruct(suvValue) && isfield(suvValue, 'SUV_max')
-        suv(crun).name = list_file(crun).name;
-        suv(crun).status = list_file(crun).status;
-        suv(crun).value = suvValue;
-        writeFile = fullfile(guiParams.savedSuv, ['RESULT_' suv(crun).name '.csv']);
-        writetable(struct2table(suv(crun).value), writeFile,'Delimiter',',');
-    end
-    disp(['DONE ... ', list_file(crun).name]);
-    disp('__________________________________');
-    disp(' ');
 end
+close(hwait);
 disp('[SUCCESS] FINISH STEP 5 CALCULATE SUV, SUVR ...');
 
 %% save "suv, suvr" files

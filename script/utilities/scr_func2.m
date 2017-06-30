@@ -30,7 +30,11 @@ VOX_UNIT = abs(det(hdr.mat)); % cach 2
 % rpet_image = load_nii(GM_PET_img);
 % VOX_UNIT = prod(rpet_image.hdr.dime.pixdim(2:4));
 
-disp(['VOX_UNIT: ' num2str(VOX_UNIT)]); % test
+if isfield(suvParams, 'subName')
+    disp(['Run subject ' suvParams.subName ' with VOX_UNIT: ' num2str(VOX_UNIT) ' ... ']); % test
+else
+    disp(['VOX_UNIT: ' num2str(VOX_UNIT)]); % test
+end
 oimg = spm_read_vols(hdr);
 
 
@@ -149,7 +153,9 @@ end
 
 if suvParams.isOnlyExcel
     % calculation SUV of each region VOI -----------------------------------
+    h = waitbar(0,['Please wait for calculation of ...' suvParams.subName], 'Name', ['Calculation of ' suvParams.subName]);
     roi_ids = keys(roi_map);
+    steps = length(roi_ids);
     for i=1:length(roi_ids)
         found = false;
         roi_ID = roi_ids{i};
@@ -209,9 +215,9 @@ if suvParams.isOnlyExcel
             temp.img = temp.img + tempMask;
             allRoiSavedFiles{j, 1} = temp;
         end
-
+        waitbar(i/steps,h,sprintf('%d / %d ROIs',i, steps));
     end
-
+    close(h) 
     % save Suv temp
     eval(sprintf('SUV_%s = suv;', suvParams.subName)); 
     save( fullfile( suvParams.savedSuv,['SUV_' suvParams.subName '.mat']) ,['SUV_' suvParams.subName]);

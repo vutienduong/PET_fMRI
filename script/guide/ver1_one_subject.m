@@ -66,9 +66,6 @@ if exist(str, 'file')
         set(handles.selPetSttTxt, 'string', 'OK');
         set(handles.selPetSttTxt, 'tooltipString', deftSet('pet_file'));
         
-        set(handles.selSavedSuvFoldTxt, 'string', 'OK');
-        set(handles.selSavedSuvFoldTxt, 'tooltipString', deftSet('saved_suv_fold'));
-        
         set(handles.binThreshTxt, 'string', deftSet('bin_thresh'));
         set(handles.subNameTxt, 'string', deftSet('subject_name'));
         set(handles.bodyWeightTxt, 'string', deftSet('body_weight'));
@@ -225,7 +222,6 @@ function runBtn_Callback(hObject, eventdata, handles)
     params.cur_path = curPath(1: slashFindIdx(end) -1);
 
     params.job_dir_path = fullfile(scr_get_spm8_dir(), '\toolbox\pet_mri_tool\necessaryFiles');
-    params.savedSuv = get(handles.selSavedSuvFoldTxt, 'tooltipString');
     params.mri = get(handles.selMriSttTxt, 'tooltipString');
     params.pet = get(handles.selPetSttTxt, 'tooltipString');
     params.subject_name = get(handles.subNameTxt, 'string');
@@ -255,7 +251,13 @@ function runBtn_Callback(hObject, eventdata, handles)
     % params.subList = handles.subList; % TODO: check
     % params.roiList = handles.roiList;
 
-    scr_fcn_run_one_subject(params);
+    rs = scr_fcn_run_one_subject(params);
+    rs = 0;
+    if rs % success
+        setNotify(handles, '[RESULT] SUCCESS');
+    else 
+        setNotify(handles, '[RESULT] FAIL !!!');
+    end
 % catch
 %     set(handles.errorTxt, 'string', 'Some errors happen');
 % end
@@ -264,8 +266,6 @@ function saveHistoryDefaultSetting(handles, str)
 str = 'VAR_NAME\tVAR_VALUE\n';
 s_strs = {get(handles.selMriSttTxt, 'tooltipString');...
     get(handles.selPetSttTxt, 'tooltipString');...
-    get(handles.selSavedSuvFoldTxt, 'tooltipString');...
-
     get(handles.binThreshTxt, 'string');...
     get(handles.subNameTxt, 'string');...
     get(handles.bodyWeightTxt, 'string');...
@@ -274,12 +274,12 @@ s_strs = {get(handles.selMriSttTxt, 'tooltipString');...
 
 s_strs = strrep(s_strs, '\', '\\');
 
-var_name_arr = {'mri_file', 'pet_file', 'saved_suv_fold', ...
-    'bin_thresh', 'subject_name', 'body_weight', 'dosage'};
+var_name_arr = {'mri_file', 'pet_file', ...
+    'bin_thresh', 'subject_name', 'body_weight', 'dosage', 'time'};
 for i =1:length(var_name_arr)
     str = [ str var_name_arr{1,i} '\t' s_strs{i,1} '\n'];
 end
-str = [ str  'time' '\t' s_strs{8,1} '\n'];
+% str = [ str  'time' '\t' s_strs{length(s_strs),1} '\n'];
 
 fileName = fullfile(scr_get_spm8_dir(), 'toolbox\pet_mri_tool\necessaryFiles\history_default.txt');
 fileID = fopen(fileName,'w');
@@ -309,10 +309,6 @@ end
 if isempty(get(handles.selPetSttTxt, 'tooltipString'))
     set(handles.errorTxt, 'string', all_errors.miss_pet_file);
     return;
-end
-
-if isempty(get(handles.selSavedSuvFoldTxt, 'tooltipString'))
-    set(handles.errorTxt, 'string', all_errors.miss_saved_suv_fold); return;
 end
 
 bin_thresh_value = get(handles.binThreshTxt, 'string');

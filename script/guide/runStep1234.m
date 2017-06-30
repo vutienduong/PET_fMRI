@@ -153,8 +153,8 @@ end
 
 params.scaninfo = scaninfo;
 params.approach = get(handles.popupmenu1, 'value'); % default is 2
-%scr_fcn_run_all(params);
-scr_fcn_run_all_with_excel(params);
+% scr_fcn_run_all_with_excel(params); % run along to 4 steps
+scr_fcn_run_all_with_excel_each_one(params); % run along to subjetcs
 % scr_fcn_run_all_sub_notemp(params); % TODO for no sub no temp
 
 function isOk = checkChosenManFields(handles)
@@ -216,7 +216,7 @@ function selImgDirBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to selImgDirBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-str = spm_select(1,'dir','Select directory which involves PET, MRI images');
+str = uigetdir('','Select directory which involves PET, MRI images');
 set(handles.cur_path, 'string', str);
 
 
@@ -256,12 +256,28 @@ function selDefSetDirBtn_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %str = spm_select(1,'dir','Select directory to save above settings');
-str = uigetdir( 'Select directory to save above settings');
-if exist(str, 'dir')
-    handles.savDefSetDir = str;
-    guidata(hObject,handles);
+str_dir = uigetdir('', 'Select directory to save above settings');
+
+if exist(str_dir, 'dir')
+    str = 'VAR_NAME\tVAR_VALUE\n';
+    s_strs = {get(handles.cur_path, 'string');...
+        get(handles.job_dir_path, 'string');...
+        get(handles.aal_file, 'string');...
+        get(handles.scaninfo_file, 'string')};
+
+    s_strs = strrep(s_strs, '\', '\\');
+
+    str = [ str 'cur_path' '\t' s_strs{1,1} '\n'];
+    str = [ str  'job_dir_path' '\t' s_strs{2,1} '\n'];
+    str = [ str  'aal_file' '\t' s_strs{3,1} '\n'];
+    str = [ str  'scaninfo_file' '\t' s_strs{4,1}  '\n'];
+
+    fileName = fullfile(str_dir, 'DEFAULT_SETTINGS_1234.txt');
+    fileID = fopen(fileName,'w');
+    fprintf(fileID,str);
+    fclose(fileID);
+    set(hObject,'enable','off');
     set(handles.selDefSetDirStt, 'string', 'Done');
-    set(handles.savDefSetBtn, 'enable', 'on');
 end
 
 
@@ -270,25 +286,6 @@ function savDefSetBtn_Callback(hObject, eventdata, handles)
 % hObject    handle to savDefSetBtn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-str = 'VAR_NAME\tVAR_VALUE\n';
-s_strs = {get(handles.cur_path, 'string');...
-    get(handles.job_dir_path, 'string');...
-    get(handles.aal_file, 'string');...
-    get(handles.scaninfo_file, 'string')};
-
-s_strs = strrep(s_strs, '\', '\\');
-
-str = [ str 'cur_path' '\t' s_strs{1,1} '\n'];
-str = [ str  'job_dir_path' '\t' s_strs{2,1} '\n'];
-str = [ str  'aal_file' '\t' s_strs{3,1} '\n'];
-str = [ str  'scaninfo_file' '\t' s_strs{4,1}  '\n'];
-
-fileName = fullfile(handles.savDefSetDir, 'DEFAULT_SETTINGS_1234.txt');
-fileID = fopen(fileName,'w');
-fprintf(fileID,str);
-fclose(fileID);
-set(hObject,'enable','off');
-
 
 
 function sheetEditTxt_Callback(hObject, eventdata, handles)
